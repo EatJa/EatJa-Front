@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // login instance 초기화
         naverIdLoginSDK = NaverIdLoginSDK.INSTANCE;
+        naverIdLoginSDK.showDevelopersLog(true);
         naverIdLoginSDK.initialize(
                 this,
                 getString(R.string.naver_client_id),

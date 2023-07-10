@@ -6,4 +6,7 @@
 
     <string name="naver_client_id">WzwSWaFJOPxVXGiNcRRt</string>
     <string name="naver_client_secret">IV0tDMUUOp</string>
+
+    <string name="nmap_api_key_id">buaxwvk1zf</string>
+    <string name="nmap_api_key">e76DgoBDBmoYdZRLA5De6gBSn24Ppo2x1DwDefiM</string>
 </resources>

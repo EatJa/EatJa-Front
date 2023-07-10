@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EatJa"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="@string/nmap_api_key_id" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
