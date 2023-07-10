@@ -1,12 +1,24 @@
 package com.example.eatja;
 
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,14 +26,25 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.eatja.databinding.ActivityMainBinding;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.navercorp.nid.NaverIdLoginSDK;
 import com.navercorp.nid.oauth.OAuthLoginCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private NaverIdLoginSDK naverIdLoginSDK;
     private Context context;
+    private ActivityResultLauncher<Intent> launcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // activity result launcher to solve deprecation
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Handle the result here
+                }
+            });
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -41,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        // runtime permission
+        requestPermissions();
+
+        // get login
+        getNaverLogin();
+    }
+
+    private void getNaverLogin() {
         // login instance 초기화
         naverIdLoginSDK = NaverIdLoginSDK.INSTANCE;
         naverIdLoginSDK.showDevelopersLog(true);
@@ -76,11 +115,96 @@ public class MainActivity extends AppCompatActivity {
         };
 
         naverIdLoginSDK.authenticate(context, oauthLoginCallback);
-
     }
 
-//    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
-//
-//    }
+    private void requestPermissions() {
+        // below line is use to request
+        // permission in the current activity.
+        Dexter.withContext(context)
+                // below line is use to request the number of
+                // permissions which are required in our app.
+                .withPermissions(android.Manifest.permission.INTERNET,
+                        android.Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                // after adding permissions we are
+                // calling and with listener method.
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        // this method is called when all permissions are granted
+                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
+                            // do your work now
+                            Toast.makeText(context, "All permissions are granted.", Toast.LENGTH_SHORT).show();
+                        }
+                        // check for permanent denial of any permission
+                        if (multiplePermissionsReport.isAnyPermissionPermanentlyDenied()) {
+                            // permission is denied permanently,
+                            // we will show user a dialog message.
+                            showSettingsDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        // this method is called when user grants some
+                        // permission and denies some of them.
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).withErrorListener(new PermissionRequestErrorListener() {
+                    // this method is use to handle error
+                    // in runtime permissions
+                    @Override
+                    public void onError(DexterError error) {
+                        // we are displaying a toast message for error message.
+                        Toast.makeText(context, "Error occurred! ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                // below line is use to run the permissions
+                // on same thread and to check the permissions
+                .onSameThread().check();
+    }
+
+    private void showSettingsDialog() {
+        // dialog message for when a permission is permanently denied
+
+        // we are displaying an alert dialog for permissions
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        // below line is the title
+        // for our alert dialog.
+        builder.setTitle("Need Permissions");
+
+        // below line is our message for our dialog
+        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
+        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // this method is called on click on positive
+                // button and on clicking shit button we
+                // are redirecting our user from our app to the
+                // settings page of our app.
+                dialog.cancel();
+                // below is the intent from which we
+                // are redirecting our user.
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                intent.setData(uri);
+//                startActivityForResult(intent, 101);
+                launcher.launch(intent);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // this method is called when
+                // user click on negative button.
+                dialog.cancel();
+            }
+        });
+        // below line is used
+        // to display our dialog
+        builder.show();
+    }
 
 }
