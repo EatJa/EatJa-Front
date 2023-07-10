@@ -3,4 +3,7 @@
     <string name="title_home">잇자</string>
     <string name="title_dashboard">함께잇자</string>
     <string name="title_mypage">My잇자</string>
+
+    <string name="naver_client_id">WzwSWaFJOPxVXGiNcRRt</string>
+    <string name="naver_client_secret">IV0tDMUUOp</string>
 </resources>
