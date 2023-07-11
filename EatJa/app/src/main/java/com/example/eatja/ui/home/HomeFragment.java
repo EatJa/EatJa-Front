@@ -1,5 +1,6 @@
 package com.example.eatja.ui.home;
 
+import android.app.Dialog;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -82,11 +83,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private String serverUrl = "http://172.10.5.130:80/eatja/api/v1";
     private JSONArray myReviewsJsonArray = new JSONArray();
     private ArrayList<Marker> myReviewsMarkerArray = new ArrayList<>(); // for my review markers
+    private Dialog reviewDialog;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mainActivity = (MainActivity) context;
+        reviewDialog = new Dialog(mainActivity);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -424,6 +427,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                     // name
                     String reviewName = item.getString("reviewName");
+                    // writer
+                    String writer = item.getString("reviewerName");
+                    // description
+                    String description = item.getString("description");
 
                     Marker marker = new Marker();
                     marker.setPosition(latLng);
@@ -434,6 +441,33 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     marker.setCaptionTextSize(14);
 
                     marker.setMap(naverMap);
+
+                    // set click listener
+                    marker.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+
+                            reviewDialog.setContentView(R.layout.review_dialog_layout);
+                            reviewDialog.getWindow()
+                                    .setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            reviewDialog.setCancelable(true);
+                            reviewDialog.getWindow().getAttributes().windowAnimations = R.style.animation;
+
+                            // get the views
+                            ImageView imageView = reviewDialog.findViewById(R.id.review_image_view);
+                            TextView titleTV = reviewDialog.findViewById(R.id.review_item_title);
+                            TextView writerTV = reviewDialog.findViewById(R.id.review_item_writer);
+                            TextView desTV = reviewDialog.findViewById(R.id.review_item_description);
+
+                            // set the review data
+                            titleTV.setText(reviewName);
+                            writerTV.setText(writer);
+                            desTV.setText(description);
+
+                            reviewDialog.show();
+                            return true;
+                        }
+                    });
 
                     myReviewsMarkerArray.add(marker);
 
