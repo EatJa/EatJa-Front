@@ -1,5 +1,7 @@
 package com.example.eatja.ui.dashboard;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +11,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.eatja.R;
 
 import java.util.List;
 
 public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.ViewHolder> {
-   private List<String> data;
+   private List<String> titleView;
+   private List<String> reviewerView;
+   private List<String> imgView;
+   private List<String> descriptionView;
 
-   public DashboardAdapter(List<String> data) {
-      this.data = data;
+
+   public DashboardAdapter(List<String> titleView, List<String> reviewerView, List<String> imgView , List<String> description) {
+      this.titleView = titleView;
+      this.reviewerView = reviewerView;
+      this.imgView = imgView;
+      this.descriptionView = description;
    }
 
    // ViewHolder and other necessary methods
@@ -31,28 +42,37 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
 
    @Override
    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-      String item = data.get(position);
-      // Set the values to the views
-      holder.titleTextView.setText(item);
-      // Set other values as needed
+      String title = titleView.get(position);
+      holder.titleTextView.setText(title);
+
+      String reviewer = reviewerView.get(position);
+      holder.reviewerTextView.setText(reviewer);
+
+      String img = imgView.get(position);
+      Glide.with(holder.imageView.getContext()).load(img).into(holder.imageView);
+
+      String description = descriptionView.get(position);
+      holder.descriptionTextView.setText(description);
    }
 
 
    @Override
    public int getItemCount() {
-      return data.size();
+      return titleView.size();
    }
 
    public class ViewHolder extends RecyclerView.ViewHolder {
       ImageView imageView;
       TextView titleTextView;
-      TextView locationTextView;
+      TextView descriptionTextView;
+      TextView reviewerTextView;
 
       public ViewHolder(@NonNull View itemView) {
          super(itemView);
          imageView = itemView.findViewById(R.id.recommend_item_image_view);
          titleTextView = itemView.findViewById(R.id.recommend_item_title);
-         locationTextView = itemView.findViewById(R.id.recommend_item_location);
+         descriptionTextView = itemView.findViewById(R.id.recommend_item_description);
+         reviewerTextView = itemView.findViewById(R.id.recommend_item_writer);
       }
    }
 
