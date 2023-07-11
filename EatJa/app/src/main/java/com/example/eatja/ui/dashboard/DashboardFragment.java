@@ -1,5 +1,7 @@
 package com.example.eatja.ui.dashboard;
 
+import static java.sql.DriverManager.println;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,12 +14,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eatja.MainActivity;
 import com.example.eatja.databinding.FragmentDashboardBinding;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
@@ -25,6 +38,10 @@ public class DashboardFragment extends Fragment {
     private MainActivity mainActivity;
     private TextView recFilterTagTV;
     private boolean[] selectedTags;
+
+    private String serverUrl = "http://172.10.5.130:80/eatja/api/v1";
+    private String server = "http://172.10.5.130:80";
+    private RecyclerView recyclerView;
     ArrayList<Integer> tagList = new ArrayList<>();
     String[] tagArray = new String[4];
 
@@ -41,6 +58,14 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Set up the RecyclerView
+        recyclerView = binding.recSV;
+        recyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
+
+        RequestAllReview requestAllReview = new RequestAllReview();
+        requestAllReview.start();
+
 
         // tag filter text view
         recFilterTagTV = binding.recFilterTagTV;
@@ -128,7 +153,71 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+
+
         return root;
+    }
+
+    class RequestAllReview extends Thread {
+        @Override
+        public void run() {
+            try {
+                URL url = new URL(serverUrl + "/all-review");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                if(conn != null) {
+                    android.util.Log.e("CHECK", "got connection");
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    //conn.setDoOutput(true);
+
+                    int resCode = conn.getResponseCode();
+
+                    if (resCode == HttpURLConnection.HTTP_OK) {
+                        try (BufferedReader br = new BufferedReader(
+                                new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                            StringBuilder response = new StringBuilder();
+                            String responseLine = null;
+                            while ((responseLine = br.readLine()) != null) {
+                                response.append(responseLine.trim());
+                            }
+
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            String reviews = jsonObject.getString("reviews");
+                            JSONArray jsonArray = new JSONArray(reviews);
+                            List<String> reviewTitles = new ArrayList<>();
+                            List<String> reviewerNames = new ArrayList<>();
+                            List<String> imgUrls = new ArrayList<>();
+                            List<String> descriptions = new ArrayList<>();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject subJsonObject = jsonArray.getJSONObject(i);
+
+                                String reviewName = subJsonObject.getString("reviewName");
+                                String reviewerName = subJsonObject.getString("reviewerName");
+                                String imgUrl = subJsonObject.getString("imgUrl");
+                                String description = subJsonObject.getString("description");
+
+                                reviewTitles.add(reviewName);
+                                reviewerNames.add(reviewerName);
+                                imgUrls.add(server+imgUrl);
+                                System.out.println(server+imgUrl);
+                                descriptions.add(description);
+                            }
+
+                            // Set the dummy data to the adapter
+                            DashboardAdapter adapter = new DashboardAdapter(reviewTitles, reviewerNames, imgUrls, descriptions);
+                            recyclerView.setAdapter(adapter);
+
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                android.util.Log.e("ERROR", e.toString());
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

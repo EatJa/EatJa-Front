@@ -545,6 +545,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         bottomSheetDialog.setContentView(R.layout.bottom_sheet_layout);
 
                         // Find and set the detailed information in the bottom sheet
+                        // TextView tvTitle = bottomSheetDialog.findViewById(R.id.tvTitle);
+                        // TextView tvDescription = bottomSheetDialog.findViewById(R.id.tvDescription);
+                        // Set the title and description based on your marker's data
+                        // tvTitle.setText("Marker Title");
+
                         TextView titleTV = bottomSheetDialog.findViewById(R.id.titleTV);
                         TextView addressTV = bottomSheetDialog.findViewById(R.id.addressTV);
                         ImageView imageIV = bottomSheetDialog.findViewById(R.id.imageIV);
@@ -564,6 +569,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 mainActivity.startActivity(i);
                             }
                         });
+
 
                         // Show the bottom sheet dialog
                         bottomSheetDialog.show();
