@@ -12,12 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eatja.MainActivity;
 import com.example.eatja.databinding.FragmentDashboardBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
@@ -25,6 +28,8 @@ public class DashboardFragment extends Fragment {
     private MainActivity mainActivity;
     private TextView recFilterTagTV;
     private boolean[] selectedTags;
+
+    private RecyclerView recyclerView;
     ArrayList<Integer> tagList = new ArrayList<>();
     String[] tagArray = new String[4];
 
@@ -41,6 +46,21 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Set up the RecyclerView
+        recyclerView = binding.recSV;
+        recyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
+
+        // Create dummy data
+        List<String> dummyData = new ArrayList<>();
+        dummyData.add("Item 1");
+        dummyData.add("Item 2");
+        dummyData.add("Item 3");
+        dummyData.add("Item 4");
+
+        // Set the dummy data to the adapter
+        DashboardAdapter adapter = new DashboardAdapter(dummyData);
+        recyclerView.setAdapter(adapter);
 
         // tag filter text view
         recFilterTagTV = binding.recFilterTagTV;
@@ -127,6 +147,8 @@ public class DashboardFragment extends Fragment {
                 builder.show();
             }
         });
+
+
 
         return root;
     }

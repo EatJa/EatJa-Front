@@ -401,11 +401,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         bottomSheetDialog.setContentView(R.layout.bottom_sheet_layout);
 
                         // Find and set the detailed information in the bottom sheet
-                        TextView tvTitle = bottomSheetDialog.findViewById(R.id.tvTitle);
-                        TextView tvDescription = bottomSheetDialog.findViewById(R.id.tvDescription);
+                        // TextView tvTitle = bottomSheetDialog.findViewById(R.id.tvTitle);
+                        // TextView tvDescription = bottomSheetDialog.findViewById(R.id.tvDescription);
                         // Set the title and description based on your marker's data
-                        tvTitle.setText("Marker Title");
-                        tvDescription.setText("Marker Description");
+                        // tvTitle.setText("Marker Title");
+                        // tvDescription.setText("Marker Description");
 
                         // Show the bottom sheet dialog
                         bottomSheetDialog.show();
