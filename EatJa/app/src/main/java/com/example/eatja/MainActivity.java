@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -34,7 +35,10 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.navercorp.nid.NaverIdLoginSDK;
+import com.navercorp.nid.oauth.NidOAuthLogin;
 import com.navercorp.nid.oauth.OAuthLoginCallback;
+import com.navercorp.nid.profile.NidProfileCallback;
+import com.navercorp.nid.profile.data.NidProfileResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private NaverIdLoginSDK naverIdLoginSDK;
     private Context context;
     private ActivityResultLauncher<Intent> launcher;
+    private String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 android.util.Log.i("LOG", ""+ naverIdLoginSDK.getExpiresAt());
                 android.util.Log.i("LOG", naverIdLoginSDK.getTokenType());
                 android.util.Log.i("LOG", naverIdLoginSDK.getState().toString());
+
+                accessToken = naverIdLoginSDK.getAccessToken();
+                new NidOAuthLogin().callProfileApi(profileCallback);
             }
 
             @Override
@@ -112,9 +120,35 @@ public class MainActivity extends AppCompatActivity {
             public void onError(int errorCode, String message) {
                 onFailure(errorCode, message);
             }
+
+            // profile callback
+            private NidProfileCallback<NidProfileResponse> profileCallback = new NidProfileCallback<NidProfileResponse>() {
+                @Override
+                public void onSuccess(NidProfileResponse response) {
+                    String userId = response.getProfile().getId();
+                    String profile = response.getProfile().toString();
+                    android.util.Log.i("PROFILE", profile);
+                    android.util.Log.i("PROFILE", "id: " + userId + "\ntoken: " + accessToken);
+                    Toast.makeText(MainActivity.this, "네이버 아이디 로그인 성공!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(int i, @NonNull String s) {
+                    String errorCode = naverIdLoginSDK.getLastErrorCode().getCode();
+                    String errorDescription = naverIdLoginSDK.getLastErrorDescription();
+                    Toast.makeText(MainActivity.this, "errorCode: " + i + "\n"
+                            + "errorDescription: " + s, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(int i, @NonNull String s) {
+                    onFailure(i, s);
+                }
+            };
         };
 
         naverIdLoginSDK.authenticate(context, oauthLoginCallback);
+
     }
 
     private void requestPermissions() {
