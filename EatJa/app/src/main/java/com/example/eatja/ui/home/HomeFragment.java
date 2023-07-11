@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.eatja.MainActivity;
 import com.example.eatja.R;
 import com.example.eatja.databinding.FragmentHomeBinding;
+import com.example.eatja.search.SearchLocal;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -262,9 +263,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
+            SearchLocal searchLocal = new SearchLocal();
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+
+                new Thread(() -> {
+                    // search query
+                    try {
+                        String response = searchLocal.search(query);
+                        android.util.Log.i("QUERY", response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                return true;
             }
 
             @Override

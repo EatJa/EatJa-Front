@@ -1,7 +1,5 @@
 package com.example.eatja;
 
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
