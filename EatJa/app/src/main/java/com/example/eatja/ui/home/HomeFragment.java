@@ -21,6 +21,7 @@ import com.example.eatja.MainActivity;
 import com.example.eatja.R;
 import com.example.eatja.databinding.FragmentHomeBinding;
 import com.example.eatja.search.SearchLocal;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.geometry.Tm128;
@@ -32,6 +33,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import org.json.JSONArray;
@@ -380,12 +382,37 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 latLngArrayList.add(latLng);
 
                 String title = item.getString("title");
+                String link = item.getString("link");
+                String category = item.getString("category");
+                String des = item.getString("description");
+                String address = item.getString("roadAddress");
 
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
                 marker.setCaptionText(title);
                 marker.setCaptionHaloColor(Color.WHITE);
                 marker.setCaptionTextSize(14);
+
+                marker.setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        // Create the bottom sheet dialog
+                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+                        bottomSheetDialog.setContentView(R.layout.bottom_sheet_layout);
+
+                        // Find and set the detailed information in the bottom sheet
+                        TextView tvTitle = bottomSheetDialog.findViewById(R.id.tvTitle);
+                        TextView tvDescription = bottomSheetDialog.findViewById(R.id.tvDescription);
+                        // Set the title and description based on your marker's data
+                        tvTitle.setText("Marker Title");
+                        tvDescription.setText("Marker Description");
+
+                        // Show the bottom sheet dialog
+                        bottomSheetDialog.show();
+
+                        return true;
+                    }
+                });
 
                 markerArrayList.add(marker);
 
