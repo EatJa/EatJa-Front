@@ -1,59 +1,79 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Shop Title -->
+    <!-- Title -->
     <TextView
-        android:id="@+id/tvShopTitle"
+        android:id="@+id/titleTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Shop Title"
+        android:text="가게 이름"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
-    <!-- Shop Category -->
+    <!-- Category -->
     <TextView
-        android:id="@+id/tvShopCategory"
-        android:layout_width="match_parent"
+        android:id="@+id/categoryTV"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Shop Category"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        android:paddingTop="8dp" />
+        android:hint="태그를 선택하세요"
+        android:background="@drawable/filterbtn_bg"
+        android:layout_below="@+id/titleTV"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="16dp"
+        android:drawableRight="@drawable/baseline_arrow_drop_down_24"
+        android:elevation="3dp"
+        android:textSize="12dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:maxLines="1"
+        android:ellipsize="marquee"/>
 
     <!-- Image Upload -->
+    <ImageView
+        android:id="@+id/reviewIV"
+        android:layout_below="@+id/categoryTV"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_margin="12dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_launcher_background"/>
     <Button
-        android:id="@+id/btnUploadImage"
+        android:id="@+id/uploadImageBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload Image"
-        android:layout_marginTop="16dp" />
-
-    <!-- Rating Bar -->
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:numStars="5"
-        android:stepSize="1" />
+        android:layout_below="@+id/reviewIV"
+        android:layout_centerHorizontal="true"
+        android:text="사진 올리기"
+        android:layout_marginTop="4dp" />
 
     <!-- Review EditText -->
     <EditText
-        android:id="@+id/etReview"
+        android:id="@+id/reviewET"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Write your review"
-        android:layout_marginTop="16dp" />
+        android:layout_height="200dp"
+        android:layout_below="@+id/uploadImageBtn"
+        android:hint="리뷰를 작성하세요."
+        android:padding="20dp"
+        android:layout_marginTop="16dp"
+        android:elevation="2dp"
+        android:background="@drawable/reviewtext_bg"/>
 
     <!-- Register Review Button -->
     <Button
-        android:id="@+id/btnRegisterReview"
+        android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register Review"
-        android:layout_marginTop="16dp" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="등록하기"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
 
-</LinearLayout>
+</RelativeLayout>

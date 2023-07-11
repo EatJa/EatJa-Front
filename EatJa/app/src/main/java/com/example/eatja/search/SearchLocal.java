@@ -10,15 +10,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SearchLocal {
-    final String baseUrl = "https://openapi.naver.com/v1/search/local.json?query=";
+    final String baseUrlLocal = "https://openapi.naver.com/v1/search/local.json?query=";
+    final String baseUrlImg = "https://openapi.naver.com/v1/search/image.json?query=";
 
     public String search(String _url) {
         HttpURLConnection con = null;
         String result = "";
 
         try {
-            URL url = new URL(baseUrl + _url + "&display=5");
-            con = (HttpURLConnection) url.openConnection();
+            URL urlLocal = new URL(baseUrlLocal + _url + "&display=5");
+            con = (HttpURLConnection) urlLocal.openConnection();
 
             con.setRequestMethod("GET");
             con.setRequestProperty("X-Naver-Client-Id", "WzwSWaFJOPxVXGiNcRRt");
