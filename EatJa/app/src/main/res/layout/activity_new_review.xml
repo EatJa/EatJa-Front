@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Shop Title -->
+    <TextView
+        android:id="@+id/tvShopTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shop Title"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Shop Category -->
+    <TextView
+        android:id="@+id/tvShopCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shop Category"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:paddingTop="8dp" />
+
+    <!-- Image Upload -->
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
+        android:layout_marginTop="16dp" />
+
+    <!-- Rating Bar -->
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:numStars="5"
+        android:stepSize="1" />
+
+    <!-- Review EditText -->
+    <EditText
+        android:id="@+id/etReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write your review"
+        android:layout_marginTop="16dp" />
+
+    <!-- Register Review Button -->
+    <Button
+        android:id="@+id/btnRegisterReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register Review"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
