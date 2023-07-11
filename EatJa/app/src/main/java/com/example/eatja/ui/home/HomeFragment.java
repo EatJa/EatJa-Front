@@ -552,7 +552,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                         TextView titleTV = bottomSheetDialog.findViewById(R.id.titleTV);
                         TextView addressTV = bottomSheetDialog.findViewById(R.id.addressTV);
-                        ImageView imageIV = bottomSheetDialog.findViewById(R.id.imageIV);
                         Button addBtn = bottomSheetDialog.findViewById(R.id.addBtn);
                         // Set the title and description based on your marker's data
                         titleTV.setText(title);
