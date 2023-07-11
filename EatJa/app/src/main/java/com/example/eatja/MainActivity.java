@@ -1,5 +1,7 @@
 package com.example.eatja;
 
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -181,15 +183,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermissions() {
+        // permissions to ask based on sdk version
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add(android.Manifest.permission.INTERNET);
+        permissions.add(android.Manifest.permission.ACCESS_NETWORK_STATE);
+        permissions.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(READ_MEDIA_IMAGES);
+        } else {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
         // below line is use to request
         // permission in the current activity.
         Dexter.withContext(context)
                 // below line is use to request the number of
                 // permissions which are required in our app.
-                .withPermissions(android.Manifest.permission.INTERNET,
-                        android.Manifest.permission.ACCESS_NETWORK_STATE,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .withPermissions(permissions)
                 // after adding permissions we are
                 // calling and with listener method.
                 .withListener(new MultiplePermissionsListener() {
@@ -338,6 +348,14 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(data);
             } // run() : 실행될 코드가 들어있는 메소드
         });
+    }
+
+    public JSONObject getJsonObject() {
+        if (jsonObject != null) {
+            return jsonObject;
+        } else {
+            return null;
+        }
     }
 
 }

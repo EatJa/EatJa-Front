@@ -2,13 +2,16 @@ package com.example.eatja.ui.home;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eatja.MainActivity;
+import com.example.eatja.NewReviewActivity;
 import com.example.eatja.R;
 import com.example.eatja.databinding.FragmentHomeBinding;
 import com.example.eatja.search.SearchLocal;
@@ -63,6 +67,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<Integer> tagList = new ArrayList<>();
     String[] followArray = new String[4];
     String[] tagArray = new String[4];
+
+    private JSONObject jsonObject;
 
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
 
@@ -298,7 +304,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                             // Call displaySearchedMarkers on the main thread
                             mainActivity.runOnUiThread(() -> displaySearchedMarkers(items));
-//                            displaySearchedMarkers(items);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -307,7 +312,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }).start();
 
-//                displaySearchedMarkers(itemsArray);
                 searchView.clearFocus();
 
                 return true;
@@ -381,9 +385,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 LatLng latLng = tmPosition.toLatLng();
                 latLngArrayList.add(latLng);
 
-                String title = item.getString("title");
+                String _title = item.getString("title");
+                String title = _title.replaceAll("<b>|</b>", "");
                 String link = item.getString("link");
-                String category = item.getString("category");
                 String des = item.getString("description");
                 String address = item.getString("roadAddress");
 
@@ -405,7 +409,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         // TextView tvDescription = bottomSheetDialog.findViewById(R.id.tvDescription);
                         // Set the title and description based on your marker's data
                         // tvTitle.setText("Marker Title");
-                        // tvDescription.setText("Marker Description");
+
+                        TextView titleTV = bottomSheetDialog.findViewById(R.id.titleTV);
+                        TextView addressTV = bottomSheetDialog.findViewById(R.id.addressTV);
+                        ImageView imageIV = bottomSheetDialog.findViewById(R.id.imageIV);
+                        Button addBtn = bottomSheetDialog.findViewById(R.id.addBtn);
+                        // Set the title and description based on your marker's data
+                        titleTV.setText(title);
+                        addressTV.setText(address);
+
+                        // button click
+                        addBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                jsonObject = mainActivity.getJsonObject();
+                                Intent i = new Intent(mainActivity, NewReviewActivity.class);
+                                i.putExtra("item", item.toString());
+                                i.putExtra("json", jsonObject.toString());
+                                mainActivity.startActivity(i);
+                            }
+                        });
+
 
                         // Show the bottom sheet dialog
                         bottomSheetDialog.show();
@@ -424,11 +448,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(latLngArrayList)
-                .build();
-        CameraUpdate cameraUpdate = CameraUpdate.fitBounds(bounds, 250);
-        naverMap.moveCamera(cameraUpdate);
+        if (latLngArrayList.size() == 0) {
+            Toast.makeText(mainActivity, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
+        } else {
+            LatLngBounds bounds = new LatLngBounds.Builder()
+                    .include(latLngArrayList)
+                    .build();
+            CameraUpdate cameraUpdate = CameraUpdate.fitBounds(bounds, 250);
+            naverMap.moveCamera(cameraUpdate);
+        }
+
     }
     @Override
     public void onDestroyView() {
