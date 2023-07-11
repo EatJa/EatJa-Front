@@ -350,6 +350,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public JSONObject getJsonObject() {
+        if (jsonObject != null) {
+            return jsonObject;
+        } else {
+            return null;
+        }
+    }
+
 }
 
 //class RequestThread extends Thread {

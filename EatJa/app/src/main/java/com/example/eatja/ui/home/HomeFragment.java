@@ -68,6 +68,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     String[] followArray = new String[4];
     String[] tagArray = new String[4];
 
+    private JSONObject jsonObject;
+
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
 
     @Override
@@ -415,8 +417,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         addBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                jsonObject = mainActivity.getJsonObject();
                                 Intent i = new Intent(mainActivity, NewReviewActivity.class);
                                 i.putExtra("item", item.toString());
+                                i.putExtra("json", jsonObject.toString());
                                 mainActivity.startActivity(i);
                             }
                         });

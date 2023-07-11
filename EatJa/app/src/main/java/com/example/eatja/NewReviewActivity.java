@@ -22,14 +22,30 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.Tm128;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.ByteString;
 
 public class NewReviewActivity extends AppCompatActivity {
 
@@ -39,14 +55,16 @@ public class NewReviewActivity extends AppCompatActivity {
     private ImageView reviewIV;
     private EditText reviewET;
     private String title;
+    private LatLng locationLatLng;
+    private String reviewDescription;
+    private JSONObject jsonObject;
 
     private TextView categoryTV;
     private boolean[] selectedTags;
-    private Integer selectedTag = 0;
-    ArrayList<Integer> tagList = new ArrayList<>();
+    private Integer selectedTag = -1;
     String[] tagArray = {"한식", "양식", "중식", "일식", "카페", "기타"};
     private Uri selectedImageUri;
-    private String imagePath;
+    private String serverUrl = "http://172.10.5.130:80/eatja/api/v1";
 
     // ActivityResultLauncher for image selection
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -59,9 +77,21 @@ public class NewReviewActivity extends AppCompatActivity {
         context = this;
 
         String itemString = getIntent().getStringExtra("item");
+        String jsonString = getIntent().getStringExtra("json");
+
         JSONObject item = new JSONObject();
+        Integer mapx, mapy;
+        Tm128 tmPosition;
         try {
             item = new JSONObject(itemString);
+            String _title = item.getString("title");
+            title = _title.replaceAll("<b>|</b>", "");
+            mapx = item.getInt("mapx");
+            mapy = item.getInt("mapy");
+            tmPosition = new Tm128(mapx, mapy);
+            locationLatLng = tmPosition.toLatLng();
+
+            jsonObject = new JSONObject(jsonString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -73,14 +103,6 @@ public class NewReviewActivity extends AppCompatActivity {
         uploadImgBtn = findViewById(R.id.uploadImageBtn);
         registerBtn = findViewById(R.id.registerBtn);
         reviewET = findViewById(R.id.reviewET);
-
-        // get item data
-        try {
-            String _title = item.getString("title");
-            title = _title.replaceAll("<b>|</b>", "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         // set view elements
         titleTV.setText(title);
@@ -117,6 +139,7 @@ public class NewReviewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // dismiss dialog
+                        selectedTag = -1;
                         dialogInterface.dismiss();
                     }
                 });
@@ -155,7 +178,82 @@ public class NewReviewActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get the selected image from the ImageView
+                Bitmap reviewImage = null;
+                try {
+                    InputStream imageStream = getContentResolver().openInputStream(selectedImageUri);
+                    reviewImage = BitmapFactory.decodeStream(imageStream);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+                // Convert the Bitmap image to a byte array
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                reviewImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                ByteString imageByteString = ByteString.of(imageBytes);
+
+                if (selectedTag < 0) {
+                    Toast.makeText(context, "태그를 선택하세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // get the review description content
+                    reviewDescription = reviewET.getText().toString();
+                    // get user profile from json
+                    String userId ="";
+                    String userName = "";
+                    try {
+                        userId = jsonObject.getString("userId");
+                        userName = jsonObject.getString("userName");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    // Create a request body with multipart/form-data
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("userId", userId)
+                            .addFormDataPart("reviewName", title)
+                            .addFormDataPart("reviewerName", userName)
+                            .addFormDataPart("imgUrl", "upload.jpg",
+                                    RequestBody.create(MediaType.parse("image/jpeg"), imageByteString))
+                            .addFormDataPart("locationUrl", locationLatLng.toString())
+                            .addFormDataPart("tag", selectedTag.toString())
+                            .addFormDataPart("description", reviewDescription)
+                            .build();
+
+                    // Create a POST request to your API
+                    Request request = new Request.Builder()
+                            .url(serverUrl+"/my-review")
+                            .post(requestBody)
+                            .build();
+
+                    // Create an OkHttpClient instance
+                    OkHttpClient client = new OkHttpClient();
+
+                    // Send the POST request asynchronously
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            // Handle request failure
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            // Handle request success
+                            if (response.isSuccessful()) {
+                                // Process the response from your API
+                                String responseData = response.body().string();
+                                android.util.Log.e("REVIEW", responseData);
+                                // ... Handle the response data as needed
+                            } else {
+                                // Handle request failure
+                                String errorMessage = response.message();
+                                android.util.Log.e("REVIEW", errorMessage);
+                                // ... Handle the error message as needed
+                            }
+                        }
+                    });
+                }
             }
         });
     }
