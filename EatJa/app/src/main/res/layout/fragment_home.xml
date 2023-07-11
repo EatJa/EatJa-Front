@@ -42,10 +42,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="12dp"
         android:textSize="10dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:backgroundTint="@color/black"
         android:textColor="@color/white"
-        android:elevation="4dp"/>
+        android:elevation="3dp"/>
 
     <Button
         android:id="@+id/myEatBtnNotPressed"
@@ -56,10 +56,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="12dp"
         android:textSize="10dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
-        android:elevation="3dp"/>
+        android:elevation="4dp"/>
 
     <TextView
         android:id="@+id/filterFollowTV"

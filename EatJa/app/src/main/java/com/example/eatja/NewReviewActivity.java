@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -159,7 +161,37 @@ public class NewReviewActivity extends AppCompatActivity {
                             // Load the selected image into the ImageView
                             InputStream imageStream = getContentResolver().openInputStream(selectedImageUri);
                             Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                            reviewIV.setImageBitmap(selectedImage);
+//                            reviewIV.setImageBitmap(selectedImage);
+                            try {
+                                // Read the rotation information from the image's EXIF metadata
+                                ExifInterface exifInterface = new ExifInterface(getContentResolver().openInputStream(selectedImageUri));
+                                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+
+                                // Rotate the image bitmap based on the orientation value
+                                Matrix matrix = new Matrix();
+                                switch (orientation) {
+                                    case ExifInterface.ORIENTATION_ROTATE_90:
+                                        matrix.postRotate(90);
+                                        break;
+                                    case ExifInterface.ORIENTATION_ROTATE_180:
+                                        matrix.postRotate(180);
+                                        break;
+                                    case ExifInterface.ORIENTATION_ROTATE_270:
+                                        matrix.postRotate(270);
+                                        break;
+                                    default:
+                                        // No rotation needed
+                                        break;
+                                }
+
+                                // Apply the rotation transformation to the Bitmap
+                                Bitmap rotatedImage = Bitmap.createBitmap(selectedImage, 0, 0, selectedImage.getWidth(), selectedImage.getHeight(), matrix, true);
+
+                                // Set the rotated image to the ImageView
+                                reviewIV.setImageBitmap(rotatedImage);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
