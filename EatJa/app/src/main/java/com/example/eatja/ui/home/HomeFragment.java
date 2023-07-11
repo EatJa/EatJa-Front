@@ -28,6 +28,10 @@ import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -272,10 +276,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     try {
                         String response = searchLocal.search(query);
                         android.util.Log.i("QUERY", response);
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray items = jsonObject.getJSONArray("items");
+                            for (int i = 0 ; i < items.length() ; i++) {
+                                JSONObject item = items.getJSONObject(i);
+                                android.util.Log.i("Item!", item.toString());
+                            }
+                            displaySearchedMarkers(items);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }).start();
+
+                searchView.clearFocus();
 
                 return true;
             }
@@ -322,6 +340,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setScaleBarEnabled(true);
     }
 
+    public void displaySearchedMarkers(JSONArray array) {
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
