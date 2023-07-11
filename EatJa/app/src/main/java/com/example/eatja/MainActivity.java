@@ -46,6 +46,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
 
     private String serverUrl = "http://172.10.5.130:80/eatja/api/v1";
+    private String userId, userName, profileImg;
+    private JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                 accessToken = naverIdLoginSDK.getAccessToken();
                 new NidOAuthLogin().callProfileApi(profileCallback);
+
             }
 
             @Override
@@ -136,15 +140,23 @@ public class MainActivity extends AppCompatActivity {
             private NidProfileCallback<NidProfileResponse> profileCallback = new NidProfileCallback<NidProfileResponse>() {
                 @Override
                 public void onSuccess(NidProfileResponse response) {
-                    String userId = response.getProfile().getId();
-                    String userName = response.getProfile().getName();
-                    String profileImg = response.getProfile().getProfileImage();
+                    userId = response.getProfile().getId();
+                    userName = response.getProfile().getName();
+                    profileImg = response.getProfile().getProfileImage();
 
                     String profile = response.getProfile().toString();
                     android.util.Log.i("PROFILE", profile);
                     android.util.Log.i("PROFILE", "id: " + userId + "\ntoken: " + accessToken);
                     Toast.makeText(MainActivity.this, "네이버 아이디 로그인 성공!", Toast.LENGTH_SHORT).show();
 
+                    jsonObject = new JSONObject();
+                    try{
+                        jsonObject.put("userId", userId);
+                        jsonObject.put("userName", userName);
+                        jsonObject.put("profileImg", profileImg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     RequestThread thread = new RequestThread(); // Thread 생성
                     thread.start();
                 }
@@ -262,32 +274,56 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() { // 이 쓰레드에서 실행 될 메인 코드
             try {
-                URL url = new URL(serverUrl + "/ping"); // 입력받은 웹서버 URL 저장
+                URL url = new URL(serverUrl + "/sign-in"); // 입력받은 웹서버 URL 저장
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // DB에 연결
                 if(conn != null){ // 만약 연결이 되었을 경우
-//                    conn.setConnectTimeout(10000); // 10초 동안 기다린 후 응답이 없으면 종료
-                    conn.setRequestMethod("GET"); // GET 메소드 : 웹 서버로 부터 리소스를 가져온다.
+                    android.util.Log.e("CHECK", "got connection");
+                    conn.setConnectTimeout(10000); // 10초 동안 기다린 후 응답이 없으면 종료
+                    conn.setRequestMethod("POST"); // GET 메소드 : 웹 서버로 부터 리소스를 가져온다.
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
                     conn.setDoInput(true); // 서버에서 온 데이터를 입력받을 수 있는 상태인가? true
                     conn.setDoOutput(true); // 서버에서 온 데이터를 출력할 수 있는 상태인가? true
 
-                    int resCode = conn.getResponseCode(); // 응답 코드를 리턴 받는다.
-                    if(resCode == HttpURLConnection.HTTP_OK){ // 만약 응답 코드가 200(=OK)일 경우
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        // BufferedReader() : 엔터만 경계로 인식하고 받은 데이터를 String 으로 고정, Scanner 에 비해 빠름!
-                        // InputStreamReader() : 지정된 문자 집합 내의 문자로 인코딩
-                        // getInputStream() : url 에서 데이터를 읽어옴
-                        String line = null; // 웹에서 가져올 데이터를 저장하기위한 변수
-                        while(true){
-                            line = reader.readLine(); // readLine() : 한 줄을 읽어오는 함수
-                            if(line == null) // 만약 읽어올 줄이 없으면 break
-                                break;
-                            println(line); // 출력 *80번째 줄의 함수*
-                        }
-                        reader.close(); // 입력이 끝남
+                    // write
+                    try(OutputStream os = conn.getOutputStream()) {
+                        byte[] input = jsonObject.toString().getBytes("utf-8");
+                        os.write(input, 0, input.length);
                     }
-                    conn.disconnect(); // DB연결 해제
+                    // read response
+                    try(BufferedReader br = new BufferedReader(
+                            new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                        StringBuilder response = new StringBuilder();
+                        String responseLine = null;
+                        while ((responseLine = br.readLine()) != null) {
+                            response.append(responseLine.trim());
+                        }
+                        System.out.println(response.toString());
+                    }
+
+//                    int resCode = conn.getResponseCode(); // 응답 코드를 리턴 받는다.
+//                    System.out.println(resCode);
+//                    if(resCode == HttpURLConnection.HTTP_OK){ // 만약 응답 코드가 200(=OK)일 경우
+//                        android.util.Log.e("CHECK", "resCode is OK");
+//                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                        // BufferedReader() : 엔터만 경계로 인식하고 받은 데이터를 String 으로 고정, Scanner 에 비해 빠름!
+//                        // InputStreamReader() : 지정된 문자 집합 내의 문자로 인코딩
+//                        // getInputStream() : url 에서 데이터를 읽어옴
+//                        String line = null; // 웹에서 가져올 데이터를 저장하기위한 변수
+//                        while(true){
+//                            line = reader.readLine(); // readLine() : 한 줄을 읽어오는 함수
+//                            if(line == null) // 만약 읽어올 줄이 없으면 break
+//                                break;
+//                            System.out.println(line); // 출력 *80번째 줄의 함수*
+//                        }
+//                        reader.close(); // 입력이 끝남
+//                    }
+//                    android.util.Log.e("CHECK", "resCode is "+ resCode);
+//                    conn.disconnect(); // DB연결 해제
+//                    android.util.Log.e("CHECK", "disconnected");
                 }
             } catch (Exception e) { //예외 처리
+                android.util.Log.e("ERROR", e.toString());
                 e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
             }
         }
