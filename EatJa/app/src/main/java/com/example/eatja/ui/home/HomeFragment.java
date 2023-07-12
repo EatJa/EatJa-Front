@@ -5,6 +5,7 @@ import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -492,6 +493,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                                         @Override
                                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                                             Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
+
                                             imageView.setImageBitmap(bitmap);
                                             reviewDialog.show();
                                         }
@@ -643,6 +645,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
 
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
+                marker.setIcon(MarkerIcons.BLACK);
+                marker.setIconTintColor(getResources().getColor(R.color.orange_main));
                 marker.setCaptionText(title);
                 marker.setCaptionHaloColor(Color.WHITE);
                 marker.setCaptionTextSize(14);
