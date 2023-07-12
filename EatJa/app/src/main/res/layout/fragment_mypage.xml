@@ -11,14 +11,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- User Profile Image -->
-<!--        <ImageView-->
-<!--            android:id="@+id/userProfileImageView"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:layout_height="200dp"-->
-<!--            android:src="@drawable/dummy_image_background"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:layout_marginBottom="16dp" />-->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userProfileImageView"
             android:layout_width="200dp"
@@ -98,7 +90,7 @@
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:text="로그아웃"
         android:layout_gravity="end|bottom"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"

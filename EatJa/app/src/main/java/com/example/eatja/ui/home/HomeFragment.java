@@ -515,6 +515,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
     @Override
     public void onDataFetchError(String errorMessage) {
 
+        android.util.Log.e("DataFetchError", errorMessage);
+
     }
 
     class RequestThread extends Thread { // DB를 불러올 때도 앱이 동작할 수 있게 하기 위해 Thread 생성
