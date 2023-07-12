@@ -8,7 +8,7 @@
 - 박근원 <a href="https://github.com/RootPark" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white"/></a>
 - 류이채 <a href="https://github.com/ihchaeryu" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white"/></a>
 
-# 기술 스택
+## 기술 스택
 - Front-end : Android Studio (java)
 - Back-end : node.js & MySQL
 
