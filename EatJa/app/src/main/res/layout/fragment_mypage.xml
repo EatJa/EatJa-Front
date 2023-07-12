@@ -77,23 +77,23 @@
 
     </LinearLayout>
 
-    <!-- Review Cards Section -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reviewRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal" />
+<!--    &lt;!&ndash; Review Cards Section &ndash;&gt;-->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/reviewRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:orientation="horizontal" />-->
 
-    <!-- Logout Button -->
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그아웃"
-        android:layout_gravity="end|bottom"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+<!--    &lt;!&ndash; Logout Button &ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/logoutButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="로그아웃"-->
+<!--        android:layout_gravity="end|bottom"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp" />-->
 
 </LinearLayout>
