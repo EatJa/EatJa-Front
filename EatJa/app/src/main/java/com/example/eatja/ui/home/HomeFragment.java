@@ -5,8 +5,11 @@ import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,12 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.eatja.MainActivity;
 import com.example.eatja.NewReviewActivity;
 import com.example.eatja.R;
@@ -45,6 +57,7 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,6 +99,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
     private JSONArray myReviewsJsonArray = new JSONArray();
     private ArrayList<Marker> myReviewsMarkerArray = new ArrayList<>(); // for my review markers
     private Dialog reviewDialog;
+    private ArrayList<Bitmap> myReviewsBitmapArray = new ArrayList<>();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -437,6 +451,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                     String description = item.getString("description");
                     // category
                     String tag = item.getString("tag");
+                    // image
+                    String imgUrl = item.getString("imgUrl");
 
                     Marker marker = new Marker();
                     marker.setPosition(latLng);
@@ -470,7 +486,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                             writerTV.setText(writer);
                             desTV.setText(description);
 
-                            reviewDialog.show();
+                            Glide.with(mainActivity)
+                                    .load("http://172.10.5.130"+imgUrl)
+                                    .into(new CustomTarget<Drawable>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                            Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
+                                            imageView.setImageBitmap(bitmap);
+                                            reviewDialog.show();
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                        }
+                                    });
+
                             return true;
                         }
                     });
