@@ -43,7 +43,8 @@
         android:layout_height="180dp"
         android:layout_margin="12dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_launcher_background"/>
+        android:background="@drawable/image_bg"
+        android:src="@drawable/baseline_image_24"/>
     <Button
         android:id="@+id/uploadImageBtn"
         android:layout_width="wrap_content"
