@@ -33,15 +33,21 @@
 ![Uploading 로그인_eatja.gif…]()
 
 ### 잇자
-![Screenshot_20230712_203403_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/e1e9b632-b934-4af3-9c60-cec9ea9f6a39)
-![Screenshot_20230712_203547_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/d2743727-13e2-463f-a438-4494e25fcda0)
+|지도|맛집마커|
+|--|--|
+|![Screenshot_20230712_203403_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/e1e9b632-b934-4af3-9c60-cec9ea9f6a39)|
+![Screenshot_20230712_203547_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/d2743727-13e2-463f-a438-4494e25fcda0)|
 
 ### 함께 잇자
-![Screenshot_20230712_203409_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/3e67a226-e8f1-434e-bafe-e1c78b1a0bc2)
-![Screenshot_20230712_203514_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/db0ff71a-273d-4ae2-b888-87f8b0050502)
+|함께 잇자|리뷰 작성|
+|--|--|
+|![Screenshot_20230712_203409_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/3e67a226-e8f1-434e-bafe-e1c78b1a0bc2)|
+![Screenshot_20230712_203514_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/db0ff71a-273d-4ae2-b888-87f8b0050502)|
 
 ### My 잇자
-![Screenshot_20230712_203418_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/76ad170d-077b-4e87-a79b-ba8809458b6e)
+|My 잇자|
+|--|
+|![Screenshot_20230712_203418_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/76ad170d-077b-4e87-a79b-ba8809458b6e)|
 
 ### Beta .apk link
 https://drive.google.com/drive/folders/1uGu4fcmRLT4v3fr5nLWntQjy69Zpqn-D?usp=sharing
