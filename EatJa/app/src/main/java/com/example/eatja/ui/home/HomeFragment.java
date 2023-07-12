@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -382,6 +383,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
+        naverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                hideSearchedMarkers();
+            }
+        });
+
         // 위치 overlay (딱 하나)
         locationOverlay = naverMap.getLocationOverlay();
         locationOverlay.setVisible(true);
@@ -537,6 +545,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 android.util.Log.e("ERROR", e.toString());
                 e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
             }
+        }
+    }
+
+    public void hideSearchedMarkers() {
+        for (int i = 0 ; i < markerArrayList.size() ; i++) {
+            markerArrayList.get(i).setMap(null);
         }
     }
 

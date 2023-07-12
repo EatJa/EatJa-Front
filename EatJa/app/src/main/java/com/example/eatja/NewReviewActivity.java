@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.eatja.ui.home.HomeFragment;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.Tm128;
 
@@ -276,7 +277,23 @@ public class NewReviewActivity extends AppCompatActivity {
                                 // Process the response from your API
                                 String responseData = response.body().string();
                                 android.util.Log.e("REVIEW", responseData);
-                                // ... Handle the response data as needed
+                                android.util.Log.e("REVIEW", "review POST sent!");
+
+                                // Show a toast message
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+//                                // Return to HomeFragment
+//                                Intent intent = new Intent(context, HomeFragment.class);
+//                                startActivity(intent);
+
+                                // Finish the NewReviewActivity to prevent going back to it
+                                finish();
+
                             } else {
                                 // Handle request failure
                                 String errorMessage = response.message();
