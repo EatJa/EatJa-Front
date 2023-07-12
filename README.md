@@ -39,15 +39,14 @@
 
 
 ### 함께 잇자
-|함께 잇자|리뷰 작성|
+|친구 잇자|추천 잇자|
 |--|--|
-|![Screenshot_20230712_203409_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/3e67a226-e8f1-434e-bafe-e1c78b1a0bc2)|
-![Screenshot_20230712_203514_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/db0ff71a-273d-4ae2-b888-87f8b0050502)|
+|![팔로우](https://github.com/EatJa/EatJa-Front/assets/43375122/dbf409c9-c9ff-474d-811c-92b7486298d0)|![추천잇자](https://github.com/EatJa/EatJa-Front/assets/43375122/319363ce-93b8-4ee1-adb3-26d60dedf108)|
 
 ### My 잇자
 |My 잇자|
 |--|
-|![Screenshot_20230712_203418_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/76ad170d-077b-4e87-a79b-ba8809458b6e)|
+|![마이페이지](https://github.com/EatJa/EatJa-Front/assets/43375122/fe7670d3-24fd-4756-8898-29534edfd474)|
 
 ### Beta .apk link
 https://drive.google.com/drive/folders/1uGu4fcmRLT4v3fr5nLWntQjy69Zpqn-D?usp=sharing
