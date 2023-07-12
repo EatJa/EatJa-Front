@@ -28,6 +28,7 @@ import com.example.eatja.MainActivity;
 import com.example.eatja.NewReviewActivity;
 import com.example.eatja.R;
 import com.example.eatja.databinding.FragmentHomeBinding;
+import com.example.eatja.search.DataCallback;
 import com.example.eatja.search.SearchLocal;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.naver.maps.geometry.LatLng;
@@ -60,7 +61,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import okio.AsyncTimeout;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCallback {
 
     private MainActivity mainActivity;
     private FragmentHomeBinding binding;
@@ -293,12 +294,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         jsonObject = mainActivity.getJsonObject();
                     }
                     // get my review markers
-                    if (myReviewsJsonArray.length() == 0) {
-                        getMyReviewMarkers();
-                        showMyReviewMarkers();
-                    } else {
-                        showMyReviewMarkers();
-                    }
+                    getMyReviewMarkers();
 
                 }
             }
@@ -406,7 +402,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void showMyReviewMarkers() {
-        if (myReviewsMarkerArray.size() != 0) {
+        if (myReviewsMarkerArray.size() == myReviewsJsonArray.length()) {
             for (int i = 0 ; i < myReviewsMarkerArray.size() ; i ++) {
                 myReviewsMarkerArray.get(i).setMap(naverMap);
             }
@@ -439,6 +435,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     String writer = item.getString("reviewerName");
                     // description
                     String description = item.getString("description");
+                    // category
+                    String tag = item.getString("tag");
 
                     Marker marker = new Marker();
                     marker.setPosition(latLng);
@@ -493,6 +491,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    @Override
+    public void onDataFetched(String responseData) {
+        // Update your UI with the fetched data
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Update your UI elements here
+                // put them in array
+                JSONObject responseJson = null;
+                try {
+                    responseJson = new JSONObject(responseData);
+                    myReviewsJsonArray = responseJson.getJSONArray("reviews");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                // show
+                showMyReviewMarkers();
+            }
+        });
+    }
+
+    @Override
+    public void onDataFetchError(String errorMessage) {
+
+    }
+
     class RequestThread extends Thread { // DB를 불러올 때도 앱이 동작할 수 있게 하기 위해 Thread 생성
         @Override
         public void run() { // 이 쓰레드에서 실행 될 메인 코드
@@ -532,10 +556,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         String responseData = response.toString();
                         System.out.println(responseData);
 
-                        // put them in array
-                        JSONObject responseJson = new JSONObject(responseData);
-                        myReviewsJsonArray = responseJson.getJSONArray("reviews");
+//                        // put them in array
+//                        JSONObject responseJson = new JSONObject(responseData);
+//                        myReviewsJsonArray = responseJson.getJSONArray("reviews");
+
+                        onDataFetched(responseData);
+
                     } else {
+                        onDataFetchError(""+resCode);
                         android.util.Log.e("GET-MYREVIEW", "resCode: "+resCode);
                     }
 
@@ -543,6 +571,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 }
             } catch (Exception e) { //예외 처리
                 android.util.Log.e("ERROR", e.toString());
+                onDataFetchError(e.getMessage());
                 e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
             }
         }
