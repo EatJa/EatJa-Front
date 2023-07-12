@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eatja.MainActivity;
+import com.example.eatja.R;
 import com.example.eatja.databinding.FragmentDashboardBinding;
 
 import org.json.JSONArray;
@@ -50,14 +52,17 @@ public class DashboardFragment extends Fragment {
         super.onAttach(context);
         mainActivity = (MainActivity) context;
     }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+    }
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+
+        binding = FragmentDashboardBinding.bind(view);
 
         // Set up the RecyclerView
         recyclerView = binding.recSV;
@@ -65,7 +70,6 @@ public class DashboardFragment extends Fragment {
 
         RequestAllReview requestAllReview = new RequestAllReview();
         requestAllReview.start();
-
 
         // tag filter text view
         recFilterTagTV = binding.recFilterTagTV;
@@ -121,9 +125,13 @@ public class DashboardFragment extends Fragment {
                                 // add comma
                                 stringBuilder.append(", ");
                             }
+                            System.out.println(tagList.get(j));
+                            RequestTagReview requestTagReview = new RequestTagReview(tagList.get(j).toString());
+                            requestTagReview.start();
                         }
+                        System.out.println(stringBuilder.toString());
                         // set text on textView
-                        recFilterTagTV.setText(stringBuilder.toString());
+
                     }
                 });
 
@@ -154,8 +162,72 @@ public class DashboardFragment extends Fragment {
         });
 
 
+    }
 
-        return root;
+    class RequestTagReview extends Thread {
+        private String tagId;
+        public RequestTagReview(String tagId){
+            this.tagId = tagId;
+        }
+        @Override
+        public void run() {
+            try {
+                URL url = new URL(serverUrl + "/tag-review");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                if (conn != null) {
+                    android.util.Log.e("CHECK", "got connection");
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setRequestProperty("tagId", tagId);
+
+                    int resCode = conn.getResponseCode();
+
+                    if (resCode == HttpURLConnection.HTTP_OK) {
+
+                        try (BufferedReader br = new BufferedReader(
+                                new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                            StringBuilder response = new StringBuilder();
+                            String responseLine = null;
+                            while ((responseLine = br.readLine()) != null) {
+                                response.append(responseLine.trim());
+                            }
+
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            String reviews = jsonObject.getString("reviews");
+                            JSONArray jsonArray = new JSONArray(reviews);
+                            List<String> reviewTitles = new ArrayList<>();
+                            List<String> reviewerNames = new ArrayList<>();
+                            List<String> imgUrls = new ArrayList<>();
+                            List<String> descriptions = new ArrayList<>();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject subJsonObject = jsonArray.getJSONObject(i);
+
+                                String reviewName = subJsonObject.getString("reviewName");
+                                String reviewerName = subJsonObject.getString("reviewerName");
+                                String imgUrl = subJsonObject.getString("imgUrl");
+                                String description = subJsonObject.getString("description");
+
+                                reviewTitles.add(reviewName);
+                                reviewerNames.add(reviewerName);
+                                imgUrls.add(server + imgUrl);
+                                System.out.println(server + imgUrl);
+                                descriptions.add(description);
+                            }
+
+                            DashboardAdapter adapter = new DashboardAdapter(reviewTitles, reviewerNames, imgUrls, descriptions);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    }
+
+                }
+            } catch (Exception e) {
+                android.util.Log.e("ERROR", e.toString());
+                e.printStackTrace();
+            }
+        }
     }
 
     class RequestAllReview extends Thread {
