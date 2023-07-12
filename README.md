@@ -35,9 +35,7 @@
 ### 잇자
 |지도|내 리뷰|팔로워 리뷰|
 |--|--|--|
-| ![지도](https://github.com/EatJa/EatJa-Front/assets/43375122/0ef80ac7-bf8b-47cb-b03f-082cda46b0ae)
-| ![마이리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/e5aa8655-b626-4c6b-ab89-261204484204)
-| ![팔로워리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/9f4a4f6d-b3f1-4073-a9db-893ced5bf2df) |
+| ![지도](https://github.com/EatJa/EatJa-Front/assets/43375122/0ef80ac7-bf8b-47cb-b03f-082cda46b0ae)| ![마이리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/e5aa8655-b626-4c6b-ab89-261204484204)| ![팔로워리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/9f4a4f6d-b3f1-4073-a9db-893ced5bf2df) |
 
 
 ### 함께 잇자
