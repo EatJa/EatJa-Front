@@ -53,6 +53,7 @@ public class DashboardFragment extends Fragment {
     private RecyclerView searchResultsRecyclerView;
     ArrayList<Integer> tagList = new ArrayList<>();
     String[] tagArray = new String[6];
+    private Integer selectedTag = -1;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -80,7 +81,7 @@ public class DashboardFragment extends Fragment {
 
         // tag filter text view
         recFilterTagTV = binding.recFilterTagTV;
-        // dummy for now
+
         tagArray[0] = "한식";
         tagArray[1] = "양식";
         tagArray[2] = "중식";
@@ -119,68 +120,30 @@ public class DashboardFragment extends Fragment {
                 // set dialog non cancelable
                 builder.setCancelable(false);
 
-                builder.setMultiChoiceItems(tagArray, selectedTags, new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setSingleChoiceItems(tagArray, selectedTag, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        // check condition
-                        if (b) {
-                            // when checkbox selected
-                            // Add position  in lang list
-                            tagList.add(i);
-                            // Sort array list
-                            Collections.sort(tagList);
-                        } else {
-                            // when checkbox unselected
-                            // Remove position from langList
-                            tagList.remove(Integer.valueOf(i));
-                        }
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedTag = which;
                     }
                 });
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("완료", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // Initialize string builder
-                        StringBuilder stringBuilder = new StringBuilder();
-                        // use for loop
-                        for (int j = 0; j < tagList.size(); j++) {
-                            // concat array value
-                            stringBuilder.append(tagArray[tagList.get(j)]);
-                            // check condition
-                            if (j != tagList.size() - 1) {
-                                // When j value  not equal
-                                // to lang list size - 1
-                                // add comma
-                                stringBuilder.append(", ");
-                            }
-                            RequestTagReview requestTagReview = new RequestTagReview(tagList.get(j).toString());
-                            requestTagReview.start();
-                        }
-                        System.out.println(stringBuilder.toString());
                         // set text on textView
+                        recFilterTagTV.setText(tagArray[selectedTag]);
 
+                        RequestTagReview requestTagReview = new RequestTagReview(selectedTag.toString());
+                        requestTagReview.start();
                     }
                 });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // dismiss dialog
+                        selectedTag = -1;
                         dialogInterface.dismiss();
-                    }
-                });
-                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // use for loop
-                        for (int j = 0; j < selectedTags.length; j++) {
-                            // remove all selection
-                            selectedTags[j] = false;
-                            // clear language list
-                            tagList.clear();
-                            // clear text view value
-                            recFilterTagTV.setText("");
-                        }
                     }
                 });
                 // show dialog

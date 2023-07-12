@@ -10,7 +10,10 @@
         android:id="@+id/explainTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="함께면 기쁨이 두 배 - 잇자를 잇자"
+        android:text="친구잇자"
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="12dp"
@@ -55,7 +58,9 @@
         app:layout_constraintTop_toBottomOf="@id/searchView"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="30dp"
-        android:textFontWeight="8"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+
         android:layout_marginTop="40dp"
         android:layout_marginLeft="12dp" />
 
