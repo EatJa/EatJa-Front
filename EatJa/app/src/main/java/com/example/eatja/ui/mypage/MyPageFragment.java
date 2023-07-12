@@ -97,22 +97,30 @@ public class MyPageFragment extends Fragment implements DataCallback {
 
     @Override
     public void onDataFetched(String responseData) {
-        JSONObject responseJson = null;
-        JSONObject userJson = null;
-        try {
-            responseJson = new JSONObject(responseData);
-            userJson = responseJson.getJSONObject("user");
-            Integer followerCountInt = userJson.getInt("followerCount");
-            Integer followeeCountInt = userJson.getInt("followeeCount");
-            followerCount = followerCountInt.toString();
-            followeeCount = followeeCountInt.toString();
 
-            // set count
-            followerCountTV.setText(followerCount);
-            followeeCountTV.setText(followeeCount);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Update your UI elements here
+                // put them in array
+                JSONObject responseJson = null;
+                JSONObject userJson = null;
+                try {
+                    responseJson = new JSONObject(responseData);
+                    userJson = responseJson.getJSONObject("user");
+                    Integer followerCountInt = userJson.getInt("followerCount");
+                    Integer followeeCountInt = userJson.getInt("followeeCount");
+                    followerCount = followerCountInt.toString();
+                    followeeCount = followeeCountInt.toString();
+
+                    // set count
+                    followerCountTV.setText(followerCount);
+                    followeeCountTV.setText(followeeCount);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override
