@@ -33,10 +33,12 @@
 ![로그인_eatja](https://github.com/EatJa/EatJa-Front/assets/43375122/f4ccc252-ea03-4b7f-bff5-32e053c887b2)
 
 ### 잇자
-|지도|맛집마커|
-|--|--|
-|![Screenshot_20230712_203403_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/e1e9b632-b934-4af3-9c60-cec9ea9f6a39)|
-![Screenshot_20230712_203547_EatJa](https://github.com/EatJa/EatJa-Front/assets/43375122/d2743727-13e2-463f-a438-4494e25fcda0)|
+|지도|내 리뷰|팔로워 리뷰|
+|--|--|--|
+|![지도](https://github.com/EatJa/EatJa-Front/assets/43375122/0ef80ac7-bf8b-47cb-b03f-082cda46b0ae)
+|![마이리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/e5aa8655-b626-4c6b-ab89-261204484204)
+|![팔로워리뷰](https://github.com/EatJa/EatJa-Front/assets/43375122/9f4a4f6d-b3f1-4073-a9db-893ced5bf2df)|
+
 
 ### 함께 잇자
 |함께 잇자|리뷰 작성|
