@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_draggable="true"
+    app:behavior_peekHeight="400dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/titleTV"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:text="Title"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="10dp"/>
+
+    <!-- address TextView -->
+    <TextView
+        android:id="@+id/addressTV"
+        android:layout_below="@+id/titleTV"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:text="Here is the address"
+        android:paddingLeft="16dp"
+        android:paddingBottom="16dp"/>
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/addressTV"
+        android:padding="6dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="잇리뷰 등록하기" />
+
+
+</RelativeLayout>

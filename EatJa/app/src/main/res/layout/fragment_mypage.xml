@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- User Profile Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProfileImageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/dummy_image_background"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- User Name -->
+        <TextView
+            android:id="@+id/usernameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <!-- Followers and Followees -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <!-- Followers Text -->
+            <TextView
+                android:id="@+id/followersTextTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="팔로워: "
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Followers Count -->
+            <TextView
+                android:id="@+id/followersCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Followees Text -->
+            <TextView
+                android:id="@+id/followeesTextTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="팔로잉: "
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Followees Count -->
+            <TextView
+                android:id="@+id/followeesCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+<!--    &lt;!&ndash; Review Cards Section &ndash;&gt;-->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/reviewRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:orientation="horizontal" />-->
+
+<!--    &lt;!&ndash; Logout Button &ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/logoutButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="로그아웃"-->
+<!--        android:layout_gravity="end|bottom"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp" />-->
+
+</LinearLayout>

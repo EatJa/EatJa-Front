@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/searchview_bg"
+        app:iconifiedByDefault="false"
+        app:queryHint="상호명을 검색하세요."
+        android:elevation="2dp"/>
+
+<!--    <com.naver.maps.map.widget.LocationButtonView-->
+<!--        android:id="@+id/locationBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:layout_marginBottom="70dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:elevation="3dp" />-->
+
+    <fragment android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        android:name="com.naver.maps.map.MapFragment"
+        android:elevation="1dp"/>
+
+    <Button
+        android:id="@+id/myEatBtnPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="나의 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="12dp"
+        android:textSize="12dp"
+        android:visibility="invisible"
+        android:backgroundTint="@color/orange_light"
+        android:textColor="@color/white"
+        android:elevation="3dp"/>
+
+    <Button
+        android:id="@+id/myEatBtnNotPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="나의 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="12dp"
+        android:textSize="12dp"
+        android:visibility="visible"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:elevation="4dp"/>
+
+    <Button
+        android:id="@+id/followEatBtnPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="팔로우하는 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toEndOf="@+id/myEatBtnPressed"
+        android:layout_marginLeft="6dp"
+        android:textSize="12dp"
+        android:visibility="invisible"
+        android:backgroundTint="@color/green_light"
+        android:textColor="@color/white"
+        android:elevation="3dp"/>
+
+    <Button
+        android:id="@+id/followEatBtnNotPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="팔로우하는 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toEndOf="@id/myEatBtnPressed"
+        android:layout_marginLeft="6dp"
+        android:textSize="12dp"
+        android:visibility="visible"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:elevation="4dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
