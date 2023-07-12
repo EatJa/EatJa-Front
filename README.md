@@ -1,4 +1,4 @@
-# EatJa-Front
+# EatJa
 ## 😋 잇는자들 😋
 ### 2023 여름 몰입캠프 2주차
 ![Eatja_logo](https://github.com/EatJa/EatJa-Front/assets/43375122/c33491ac-140e-44ff-a086-e251a321efee)
