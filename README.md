@@ -35,4 +35,8 @@
 
 ### My 잇자
 
+### Beta .apk link
+https://drive.google.com/drive/folders/1uGu4fcmRLT4v3fr5nLWntQjy69Zpqn-D?usp=sharing
+> 안드로이드 버전 11 이상에서 동작합니다.
+
 
