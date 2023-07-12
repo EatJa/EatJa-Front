@@ -30,7 +30,7 @@
 
 ## pre-view
 ### Intro:Splash
-![Uploading 로그인_eatja.gif…]()
+![로그인_eatja](https://github.com/EatJa/EatJa-Front/assets/43375122/f4ccc252-ea03-4b7f-bff5-32e053c887b2)
 
 ### 잇자
 |지도|맛집마커|
