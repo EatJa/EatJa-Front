@@ -96,7 +96,7 @@ public class MyPageFragment extends Fragment implements DataCallback {
     }
 
     @Override
-    public void onDataFetched(String responseData) {
+    public void onDataFetched(String responseData, Integer code) {
 
         requireActivity().runOnUiThread(new Runnable() {
             @Override
@@ -166,7 +166,7 @@ public class MyPageFragment extends Fragment implements DataCallback {
                         System.out.println(responseData);
 
                         // on data fetched (async)
-                        onDataFetched(responseData);
+                        onDataFetched(responseData, 0);
 
                     } else {
                         onDataFetchError(""+resCode);

@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
     private FusedLocationSource locationSource;
     private androidx.appcompat.widget.SearchView searchView;
     private Button myEatBtnPressed, myEatBtnNotPressed;
-    private TextView filterFollowTV, filterTagTV;
+    private Button myFollowBtnPressed, myFollowBtnNotPressed;
     private boolean[] selectedFollows, selectedTags;
     ArrayList<Integer> followList = new ArrayList<>();
     ArrayList<Integer> tagList = new ArrayList<>();
@@ -100,7 +100,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
     private JSONArray myReviewsJsonArray = new JSONArray();
     private ArrayList<Marker> myReviewsMarkerArray = new ArrayList<>(); // for my review markers
     private Dialog reviewDialog;
-    private ArrayList<Bitmap> myReviewsBitmapArray = new ArrayList<>();
+    private final Integer GET_MYREVIEW_CODE = 1;
+    private final Integer GET_FOLLOWEEINFO_CODE = 2;
+    private final Integer GET_FOLLOWEE_REVIEW_CODE = 3;
+    private final Integer GET_LAST_FOLLOWEE_REVIEW_CODE = 4;
+    private JSONArray myFolloweeJsonArray = new JSONArray();    // 내가 팔로우 하는 사람들
+    private ArrayList<JSONObject> allReviewsJsonArray = new ArrayList<>();    // 내가 팔로우 하는 사람들의 모든 리뷰!
+    private ArrayList<Marker> allReviewsMarkerArray = new ArrayList<>();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -116,172 +122,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        // text view
-        filterFollowTV = binding.filterFollowTV;
-        // dummy for now
-        followArray[0] = "Kim";
-        followArray[1] = "Park";
-        followArray[2] = "Choi";
-        followArray[3] = "Ryu";
-        selectedFollows = new boolean[followArray.length];
-        filterFollowTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-
-                // set title
-                builder.setTitle("팔로우를 선택하세요");
-
-                // set dialog non cancelable
-                builder.setCancelable(false);
-
-                builder.setMultiChoiceItems(followArray, selectedFollows, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        // check condition
-                        if (b) {
-                            // when checkbox selected
-                            // Add position  in lang list
-                            followList.add(i);
-                            // Sort array list
-                            Collections.sort(followList);
-                        } else {
-                            // when checkbox unselected
-                            // Remove position from langList
-                            followList.remove(Integer.valueOf(i));
-                        }
-                    }
-                });
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Initialize string builder
-                        StringBuilder stringBuilder = new StringBuilder();
-                        // use for loop
-                        for (int j = 0; j < followList.size(); j++) {
-                            // concat array value
-                            stringBuilder.append(followArray[followList.get(j)]);
-                            // check condition
-                            if (j != followList.size() - 1) {
-                                // When j value  not equal
-                                // to lang list size - 1
-                                // add comma
-                                stringBuilder.append(", ");
-                            }
-                        }
-                        // set text on textView
-                        filterFollowTV.setText(stringBuilder.toString());
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // dismiss dialog
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // use for loop
-                        for (int j = 0; j < selectedFollows.length; j++) {
-                            // remove all selection
-                            selectedFollows[j] = false;
-                            // clear language list
-                            followList.clear();
-                            // clear text view value
-                            filterFollowTV.setText("");
-                        }
-                    }
-                });
-                // show dialog
-                builder.show();
-            }
-        });
-
-        filterTagTV = binding.filterTagTV;
-        selectedTags = new boolean[tagArray.length];
-        filterTagTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-
-                // set title
-                builder.setTitle("태그를 선택하세요");
-
-                // set dialog non cancelable
-                builder.setCancelable(false);
-
-                builder.setMultiChoiceItems(tagArray, selectedTags, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        // check condition
-                        if (b) {
-                            // when checkbox selected
-                            // Add position  in lang list
-                            tagList.add(i);
-                            // Sort array list
-                            Collections.sort(tagList);
-                        } else {
-                            // when checkbox unselected
-                            // Remove position from langList
-                            tagList.remove(Integer.valueOf(i));
-                        }
-                    }
-                });
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Initialize string builder
-                        StringBuilder stringBuilder = new StringBuilder();
-                        // use for loop
-                        for (int j = 0; j < tagList.size(); j++) {
-                            // concat array value
-                            stringBuilder.append(tagArray[tagList.get(j)]);
-                            // check condition
-                            if (j != tagList.size() - 1) {
-                                // When j value  not equal
-                                // to lang list size - 1
-                                // add comma
-                                stringBuilder.append(", ");
-                            }
-                        }
-                        // set text on textView
-                        filterTagTV.setText(stringBuilder.toString());
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // dismiss dialog
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // use for loop
-                        for (int j = 0; j < selectedTags.length; j++) {
-                            // remove all selection
-                            selectedTags[j] = false;
-                            // clear language list
-                            tagList.clear();
-                            // clear text view value
-                            filterTagTV.setText("");
-                        }
-                    }
-                });
-                // show dialog
-                builder.show();
-            }
-        });
 
         // buttons
         myEatBtnPressed = binding.myEatBtnPressed;
@@ -310,6 +150,38 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                     }
                     // get my review markers
                     getMyReviewMarkers();
+
+                }
+            }
+        });
+
+        // buttons
+        myFollowBtnPressed = binding.followEatBtnPressed;
+        myFollowBtnNotPressed = binding.followEatBtnNotPressed;
+        myFollowBtnPressed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myFollowBtnPressed.getVisibility() == View.VISIBLE) {
+                    myFollowBtnPressed.setVisibility(View.INVISIBLE);
+                    myFollowBtnNotPressed.setVisibility(View.VISIBLE);
+
+                    hideFolloweeReviewMarkers();
+                }
+            }
+        });
+        myFollowBtnNotPressed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myFollowBtnNotPressed.getVisibility() == View.VISIBLE) {
+                    myFollowBtnPressed.setVisibility(View.VISIBLE);
+                    myFollowBtnNotPressed.setVisibility(View.INVISIBLE);
+
+                    // user profile json
+                    if (jsonObject == null) {
+                        jsonObject = mainActivity.getJsonObject();
+                    }
+                    // get followees' review markers
+                    getFolloweeReviewMarkers();
 
                 }
             }
@@ -416,6 +288,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
         requestThread.start();
     }
 
+    public void getFolloweeReviewMarkers() {
+        RequestThreadFollow requestThreadFollow = new RequestThreadFollow();
+        requestThreadFollow.start();
+    }
+
+    public void getAllMarkersOfFollowees() {
+        RequestThreadAll requestThreadAll = new RequestThreadAll();
+        requestThreadAll.start();
+    }
+
     public void showMyReviewMarkers() {
         if (myReviewsMarkerArray.size() == myReviewsJsonArray.length()) {
             for (int i = 0 ; i < myReviewsMarkerArray.size() ; i ++) {
@@ -458,7 +340,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                     Marker marker = new Marker();
                     marker.setPosition(latLng);
                     marker.setIcon(MarkerIcons.BLACK);      // basic icon for now!
-                    marker.setIconTintColor(Color.BLACK);
+                    marker.setIconTintColor(getResources().getColor(R.color.orange_light));
                     marker.setCaptionText(reviewName);
                     marker.setCaptionHaloColor(Color.WHITE);
                     marker.setCaptionTextSize(14);
@@ -524,25 +406,201 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
         }
     }
 
-    @Override
-    public void onDataFetched(String responseData) {
-        // Update your UI with the fetched data
-        requireActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Update your UI elements here
-                // put them in array
-                JSONObject responseJson = null;
+    public void showAllReviewMarkers() {
+        if (allReviewsMarkerArray.size() == allReviewsJsonArray.size()) {
+            for (int i = 0 ; i < allReviewsMarkerArray.size() ; i ++) {
+                allReviewsMarkerArray.get(i).setMap(naverMap);
+            }
+        } else {
+            for (int i = 0 ; i < allReviewsJsonArray.size() ; i++) {
+                JSONObject item = new JSONObject();
                 try {
-                    responseJson = new JSONObject(responseData);
-                    myReviewsJsonArray = responseJson.getJSONArray("reviews");
+                    item = allReviewsJsonArray.get(i);
+
+                    String latLngString = item.getString("locationUrl");
+                    // if not correct LatLng format
+                    if (!latLngString.contains("LatLng")) {
+                        continue;
+                    }
+                    // Extract the latitude and longitude values from the string
+                    String[] latLngParts = latLngString
+                            .replace("LatLng{", "")
+                            .replace("}", "")
+                            .split(",");
+
+                    double latitude = Double.parseDouble(latLngParts[0].replace("latitude=", "").trim());
+                    double longitude = Double.parseDouble(latLngParts[1].replace("longitude=", "").trim());
+
+                    // Create a new LatLng object
+                    LatLng latLng = new LatLng(latitude, longitude);
+
+                    // name
+                    String reviewName = item.getString("reviewName");
+                    // writer
+                    String writer = item.getString("reviewerName");
+                    // description
+                    String description = item.getString("description");
+                    // category
+                    String tag = item.getString("tag");
+                    // image
+                    String imgUrl = item.getString("imgUrl");
+
+                    Marker marker = new Marker();
+                    marker.setPosition(latLng);
+                    marker.setIcon(MarkerIcons.BLACK);      // basic icon for now!
+                    marker.setIconTintColor(getResources().getColor(R.color.green_light));
+                    marker.setCaptionText(reviewName);
+                    marker.setCaptionHaloColor(Color.WHITE);
+                    marker.setCaptionTextSize(14);
+
+                    marker.setMap(naverMap);
+
+                    // set click listener
+                    marker.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+
+                            reviewDialog.setContentView(R.layout.review_dialog_layout);
+                            reviewDialog.getWindow()
+                                    .setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            reviewDialog.setCancelable(true);
+                            reviewDialog.getWindow().getAttributes().windowAnimations = R.style.animation;
+
+                            // get the views
+                            ImageView imageView = reviewDialog.findViewById(R.id.review_image_view);
+                            TextView titleTV = reviewDialog.findViewById(R.id.review_item_title);
+                            TextView writerTV = reviewDialog.findViewById(R.id.review_item_writer);
+                            TextView desTV = reviewDialog.findViewById(R.id.review_item_description);
+
+                            // set the review data
+                            titleTV.setText(reviewName);
+                            writerTV.setText(writer);
+                            desTV.setText(description);
+
+                            Glide.with(mainActivity)
+                                    .load("http://172.10.5.130"+imgUrl)
+                                    .into(new CustomTarget<Drawable>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                            Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
+
+                                            imageView.setImageBitmap(bitmap);
+                                            reviewDialog.show();
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                        }
+                                    });
+
+                            return true;
+                        }
+                    });
+
+                    allReviewsMarkerArray.add(marker);
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                // show
-                showMyReviewMarkers();
             }
-        });
+        }
+    }
+
+    public void hideFolloweeReviewMarkers() {
+        for (int i = 0 ; i < allReviewsMarkerArray.size() ; i++) {
+            allReviewsMarkerArray.get(i).setMap(null);
+        }
+    }
+
+    @Override
+    public void onDataFetched(String responseData, Integer code) {
+        if (code == GET_MYREVIEW_CODE) {
+            // Update your UI with the fetched data
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Update your UI elements here
+                    // put them in array
+                    JSONObject responseJson = null;
+                    try {
+                        responseJson = new JSONObject(responseData);
+                        myReviewsJsonArray = responseJson.getJSONArray("reviews");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // show
+                    showMyReviewMarkers();
+                }
+            });
+        } else if (code == GET_FOLLOWEEINFO_CODE) {
+            // Update your UI with the fetched data
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Update your UI elements here
+                    // put them in array
+                    JSONObject responseJson = null;
+                    try {
+                        responseJson = new JSONObject(responseData);
+                        myFolloweeJsonArray = responseJson.getJSONArray("followees");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // show
+                    getAllMarkersOfFollowees();
+                }
+            });
+        } else if (code == GET_FOLLOWEE_REVIEW_CODE) {
+            // Update your UI with the fetched data
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Update your UI elements here
+                    // put them in array
+                    JSONObject responseJson = null;
+                    JSONArray reviewsJsonArray = null;
+                    try {
+                        responseJson = new JSONObject(responseData);
+                        reviewsJsonArray = responseJson.getJSONArray("reviews");
+
+                        for (int i = 0 ; i < reviewsJsonArray.length() ; i ++) {
+                            allReviewsJsonArray.add(reviewsJsonArray.getJSONObject(i));
+                            android.util.Log.e("REVIEWS-ADDED", reviewsJsonArray.toString());
+                        }
+                        android.util.Log.e("REVIEWS-ADDED", "All reviews of this followee are added");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        } else if (code == GET_LAST_FOLLOWEE_REVIEW_CODE) {
+            // Update your UI with the fetched data
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Update your UI elements here
+                    // put them in array
+                    JSONObject responseJson = null;
+                    JSONArray reviewsJsonArray = null;
+                    try {
+                        responseJson = new JSONObject(responseData);
+                        reviewsJsonArray = responseJson.getJSONArray("reviews");
+
+                        for (int i = 0 ; i < reviewsJsonArray.length() ; i ++) {
+                            allReviewsJsonArray.add(reviewsJsonArray.getJSONObject(i));
+                            android.util.Log.e("REVIEWS-ADDED-LAST", reviewsJsonArray.toString());
+                        }
+                        android.util.Log.e("REVIEWS-ADDED-LAST", "All reviews of LAST followee are added");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    System.out.println(allReviewsJsonArray);
+                    showAllReviewMarkers();
+                }
+            });
+        }
     }
 
     @Override
@@ -595,7 +653,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
 //                        JSONObject responseJson = new JSONObject(responseData);
 //                        myReviewsJsonArray = responseJson.getJSONArray("reviews");
 
-                        onDataFetched(responseData);
+                        onDataFetched(responseData, GET_MYREVIEW_CODE);
 
                     } else {
                         onDataFetchError(""+resCode);
@@ -609,6 +667,132 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                 onDataFetchError(e.getMessage());
                 e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
             }
+        }
+    }
+
+    class RequestThreadFollow extends Thread { // DB를 불러올 때도 앱이 동작할 수 있게 하기 위해 Thread 생성
+        @Override
+        public void run() { // 이 쓰레드에서 실행 될 메인 코드
+            try {
+                // user id
+                String userId = "";
+                JSONObject userIdJson = new JSONObject();
+                try {
+                    userId = jsonObject.getString("userId");
+                    userIdJson.put("userId", userId);
+                    android.util.Log.e("GET-FOLLOWEE", "userIdJson: "+userIdJson.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                URL url = new URL(serverUrl + "/followee-info?userId="+userId); // 입력받은 웹서버 URL 저장
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // DB에 연결
+                if(conn != null){ // 만약 연결이 되었을 경우
+                    android.util.Log.e("GET-FOLLOWEE", "got connection");
+                    conn.setConnectTimeout(10000); // 10초 동안 기다린 후 응답이 없으면 종료
+                    conn.setRequestMethod("GET"); // GET 메소드 : 웹 서버로 부터 리소스를 가져온다.
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setDoInput(true); // 서버에서 온 데이터를 입력받을 수 있는 상태인가? true
+//                    conn.setDoOutput(true); // 서버에서 온 데이터를 출력할 수 있는 상태인가? true
+
+                    int resCode = conn.getResponseCode();
+                    if (resCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                        StringBuilder response = new StringBuilder();
+                        String responseLine;
+                        while ((responseLine = br.readLine()) != null) {
+                            response.append(responseLine.trim());
+                        }
+                        br.close();
+
+                        String responseData = response.toString();
+                        System.out.println(responseData);
+
+//                        // put them in array
+//                        JSONObject responseJson = new JSONObject(responseData);
+//                        myReviewsJsonArray = responseJson.getJSONArray("reviews");
+
+                        onDataFetched(responseData, GET_FOLLOWEEINFO_CODE);
+
+                    } else {
+                        onDataFetchError(""+resCode);
+                        android.util.Log.e("GET-FOLLOWEE", "resCode: "+resCode);
+                    }
+
+                    conn.disconnect();
+                }
+            } catch (Exception e) { //예외 처리
+                android.util.Log.e("ERROR", e.toString());
+                onDataFetchError(e.getMessage());
+                e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
+            }
+        }
+    }
+
+    class RequestThreadAll extends Thread { // DB를 불러올 때도 앱이 동작할 수 있게 하기 위해 Thread 생성
+        @Override
+        public void run() { // 이 쓰레드에서 실행 될 메인 코드
+            for (int i = 0; i < myFolloweeJsonArray.length(); i++) {
+                try {
+                    // user id
+                    String userId = ""; // that followee's id
+                    JSONObject userJson = new JSONObject();
+                    try {
+                        userJson = myFolloweeJsonArray.getJSONObject(i);
+                        userId = userJson.getString("userId");
+                        android.util.Log.e("GET-FOLLOWEE-REVIEWS", "userId: " + userId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    URL url = new URL(serverUrl + "/my-review?userId=" + userId); // 입력받은 웹서버 URL 저장
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // DB에 연결
+                    if (conn != null) { // 만약 연결이 되었을 경우
+                        android.util.Log.e("GET-FOLLOWEE-REVIEWS", "got connection");
+                        conn.setConnectTimeout(10000); // 10초 동안 기다린 후 응답이 없으면 종료
+                        conn.setRequestMethod("GET"); // GET 메소드 : 웹 서버로 부터 리소스를 가져온다.
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        conn.setRequestProperty("Accept", "application/json");
+                        conn.setDoInput(true); // 서버에서 온 데이터를 입력받을 수 있는 상태인가? true
+//                    conn.setDoOutput(true); // 서버에서 온 데이터를 출력할 수 있는 상태인가? true
+
+                        int resCode = conn.getResponseCode();
+                        if (resCode == HttpURLConnection.HTTP_OK) {
+                            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                            StringBuilder response = new StringBuilder();
+                            String responseLine;
+                            while ((responseLine = br.readLine()) != null) {
+                                response.append(responseLine.trim());
+                            }
+                            br.close();
+
+                            String responseData = response.toString();
+                            System.out.println(responseData);
+
+                            if (i != myFolloweeJsonArray.length()-1) {
+                                onDataFetched(responseData, GET_FOLLOWEE_REVIEW_CODE);
+                            } else {
+                                // last followee!
+                                onDataFetched(responseData, GET_LAST_FOLLOWEE_REVIEW_CODE);
+                            }
+                        } else {
+                            onDataFetchError("" + resCode);
+                            android.util.Log.e("GET-FOLLOWEE-REVIEWS", "resCode: " + resCode);
+                        }
+
+                        conn.disconnect();
+                    }
+                } catch (Exception e) { //예외 처리
+                    android.util.Log.e("ERROR", e.toString());
+                    onDataFetchError(e.getMessage());
+                    e.printStackTrace(); // printStackTrace() : 에러 메세지의 발생 근원지를 찾아서 단계별로 에러를 출력
+                }
+            }
+
+//            // done with all followees
+//            System.out.println(allReviewsJsonArray);
+//            android.util.Log.e("ALL REVIEWS", "ALL HERE!!");
         }
     }
 
@@ -646,7 +830,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, DataCa
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
                 marker.setIcon(MarkerIcons.BLACK);
-                marker.setIconTintColor(getResources().getColor(R.color.orange_main));
+                marker.setIconTintColor(Color.BLACK);
                 marker.setCaptionText(title);
                 marker.setCaptionHaloColor(Color.WHITE);
                 marker.setCaptionTextSize(14);

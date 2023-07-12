@@ -41,9 +41,9 @@
         app:layout_constraintTop_toBottomOf="@id/searchView"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="12dp"
-        android:textSize="10dp"
+        android:textSize="12dp"
         android:visibility="invisible"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/orange_light"
         android:textColor="@color/white"
         android:elevation="3dp"/>
 
@@ -55,50 +55,38 @@
         app:layout_constraintTop_toBottomOf="@id/searchView"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="12dp"
-        android:textSize="10dp"
+        android:textSize="12dp"
         android:visibility="visible"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:elevation="4dp"/>
 
-    <TextView
-        android:id="@+id/filterFollowTV"
-        android:layout_width="120dp"
+    <Button
+        android:id="@+id/followEatBtnPressed"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Filter Follows"
-        android:background="@drawable/filterbtn_bg"
-        android:drawableRight="@drawable/baseline_arrow_drop_down_24"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
+        android:text="팔로우하는 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
         app:layout_constraintStart_toEndOf="@+id/myEatBtnPressed"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        android:elevation="3dp"
+        android:layout_marginLeft="6dp"
         android:textSize="12dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:maxLines="1"
-        android:ellipsize="marquee"/>
+        android:visibility="invisible"
+        android:backgroundTint="@color/green_light"
+        android:textColor="@color/white"
+        android:elevation="3dp"/>
 
-    <TextView
-        android:id="@+id/filterTagTV"
-        android:layout_width="120dp"
+    <Button
+        android:id="@+id/followEatBtnNotPressed"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Filter Tags"
-        android:background="@drawable/filterbtn_bg"
-        android:drawableRight="@drawable/baseline_arrow_drop_down_24"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintStart_toEndOf="@+id/filterFollowTV"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        android:elevation="3dp"
+        android:text="팔로우하는 Eat"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toEndOf="@id/myEatBtnPressed"
+        android:layout_marginLeft="6dp"
         android:textSize="12dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:maxLines="1"
-        android:ellipsize="marquee"/>
+        android:visibility="visible"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:elevation="4dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
