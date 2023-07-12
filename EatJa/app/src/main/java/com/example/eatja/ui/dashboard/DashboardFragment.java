@@ -43,6 +43,8 @@ public class DashboardFragment extends Fragment {
     private TextView recFilterTagTV;
     private boolean[] selectedTags;
 
+    private JSONObject currentUser;
+
     private String serverUrl = "http://172.10.5.130:80/eatja/api/v1";
     private String server = "http://172.10.5.130:80";
     private RecyclerView recyclerView;
@@ -151,7 +153,6 @@ public class DashboardFragment extends Fragment {
                                 // add comma
                                 stringBuilder.append(", ");
                             }
-                            System.out.println(tagList.get(j));
                             RequestTagReview requestTagReview = new RequestTagReview(tagList.get(j).toString());
                             requestTagReview.start();
                         }
@@ -248,21 +249,26 @@ public class DashboardFragment extends Fragment {
                             String user = jsonObject.getString("user");
                             JSONObject ubJson = new JSONObject(user);
 
+                            List<String> userIds = new ArrayList<>();
                             List<String> userNames = new ArrayList<>();
                             List<String> profileImgs = new ArrayList<>();
                             List<String> followerCounts = new ArrayList<>();
                             List<String> followeeCounts = new ArrayList<>();
 
+                            String userId = ubJson.getString("userId");
                             String userName = ubJson.getString("userName");
                             String profileImg = ubJson.getString("profileImg");
                             String followerCount = ubJson.getString("followerCount");
                             String followeeCount = ubJson.getString("followeeCount");
 
+                            userIds.add(userId);
                             userNames.add(userName);
                             profileImgs.add(profileImg);
                             followerCounts.add(followerCount);
                             followeeCounts.add(followeeCount);
 
+                            currentUser = mainActivity.getJsonObject();
+                            String currentUserId = currentUser.getString("userId");
 
                             mainActivity.runOnUiThread(new Runnable() {
                                 @Override
@@ -272,7 +278,7 @@ public class DashboardFragment extends Fragment {
                                         // Display the search results popup window
                                         showSearchResults();
                                         // Update the adapter with search results
-                                        SearchResultsAdapter adapter = new SearchResultsAdapter(userNames, profileImgs, followerCounts, followeeCounts);
+                                        SearchResultsAdapter adapter = new SearchResultsAdapter(userIds, userNames, profileImgs, followerCounts, followeeCounts, currentUserId);
                                         searchResultsRecyclerView.setAdapter(adapter);
                                     } else {
                                         // Hide the search results popup window if no results found
